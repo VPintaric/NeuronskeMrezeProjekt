@@ -18,11 +18,11 @@ class NeuralNet:
 
         self.Y = self.X
         for i in range(len(self.W) - 1):
-            self.Y = tf.nn.relu(tf.matmul(self.Y, self.W[i], transpose_b=True) + self.b[i])
+            self.Y = tf.nn.softsign(tf.matmul(self.Y, self.W[i], transpose_b=True) + self.b[i])
         self.Y = tf.matmul(self.Y, self.W[len(self.W) - 1], transpose_b=True) + self.b[len(self.W) - 1]
         # do not use softmax! find something better (squeeze output in range 0-255?)
 
-        self.loss = tf.reduce_sum(tf.square(self.Y_ - self.Y))
+        self.loss = tf.reduce_sum(tf.square(self.Y_ - self.Y)) / (tf.size(self.X) / tf.constant(config[0]))
 
         self.trainer = tf.train.GradientDescentOptimizer(param_delta)    
         self.train_step = self.trainer.minimize(self.loss)

@@ -19,24 +19,30 @@ Y_ = np.array([[px[0], px[1], px[2]] for px in pxl_vals])
 print("Extracted pixel values!")
 
 print("Configuring neural net...")
-nn_config = [2, 20, 3]
+nn_config = [2, 100, 100, 100, 100, 100, 3]
 
 print("Neural net architecture: " + str(nn_config))
 
-nn = nn.NeuralNet(nn_config, param_delta=1e-5)
+nn = nn.NeuralNet(nn_config, param_delta=1e-2, print_every=25)
 
 print("Training neural net...")
-nn.train(X, Y_, 200)
+nn.train(X, Y_, 100)
 print("Trained neural net!")
 
 print("Evaluating...")
 Y = nn.eval(X)
 
+print("Predicted:")
+print(Y)
+
+print("\nTrue:")
+print(Y_)
+
 print("Writing new pixel values...")
 for i in range(img_width):
     for j in range(img_height):
-        pdb.set_trace()
-        pxls[i, j] = Y[i, j]
+        val = Y[i * img_width + j]
+        pxls[i, j] = (int(round(val[0])), int(round(val[1])), int(round(val[2])))
 
 print("Saving to file...")
 image.save("test_out.jpg", "JPEG")
