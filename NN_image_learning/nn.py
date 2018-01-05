@@ -28,12 +28,17 @@ class NeuralNet:
         self.train_step = self.trainer.minimize(self.loss)
 
         self.session = tf.Session()
-
-    def train(self, X, Y_, param_niter=1000):
         self.session.run(tf.global_variables_initializer())
 
+
+    def train_iteration(self, X, Y_):
+        loss, _, w, b = self.session.run([self.loss, self.train_step, self.W, self.b], 
+                                            feed_dict = {self.X: X, self.Y_: Y_})
+        return loss
+
+    def train(self, X, Y_, param_niter=1000):
         for i in range(param_niter):
-            loss, _, w, b = self.session.run([self.loss, self.train_step, self.W, self.b], feed_dict = {self.X: X, self.Y_: Y_})
+            loss = self.train_iteration(X, Y_)
             if(i % self.print_every == 0):
                 print("ITERATION " + str(i) + ", loss = " + str(loss))
 
